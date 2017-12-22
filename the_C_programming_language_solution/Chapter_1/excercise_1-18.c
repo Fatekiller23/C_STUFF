@@ -8,7 +8,7 @@ and to delete entirely blank lines.
 int getline(char line[], int maxline);
 void copy(char to[], char from[]);
 void get_off(char original[], char new[],int trailer);
-void raw(char s[], int end);
+void raw(char s[]);
 
 
 /* print the longest input line */
@@ -22,7 +22,7 @@ main()
     max = 0;
     while ((len = getline(line, MAXLINE)) > 0) {
         get_off(line, new, len);
-        raw(new, len);
+        raw(new);
     }
 
     return 0;
@@ -50,22 +50,25 @@ void copy(char to[], char from[])
 
 /* return no trailing spaces */
 void get_off(char original[], char new[],int trailer) {
-    int work = 0;
-    for (int i=trailer -2 ;trailer != -1; --trailer) {
+    int end = 0;
+    for (int i = trailer-2;i != -1; --i) {
+        // printf("this word is %c \n", original[i]);
 
-        if (original[trailer] != '\t' || original[trailer] != '\b'  || original[trailer] != ' '){
-            work = 1;
+        if (original[i] != '\t' && original[i] != '\b'  && original[i] != ' '){
+            if (end == 0)
+                new[i+1] = '\0';
+                end = 1;
+            new[i] = original[i];
+            // printf("new index %d is %c",i, new[i]);
         }
-        if (work == 1) {
-            new[trailer] = original[trailer];
-        }
+
         
     }
 }
 
-void raw(char s[], int end) {
+void raw(char s[]) {
     int i = 0;
-    while ( i < end) {
+    while ( s[i] != '\0') {
         if (s[i] =='\t'){
             printf("\\t");
         }
@@ -74,6 +77,9 @@ void raw(char s[], int end) {
         }
         else if(s[i] =='\\'){
             printf("\\");
+        }
+        else if(s[i] ==' '){
+            printf("\\s");
         }
         else{
             printf("%c",s[i]);
