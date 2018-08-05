@@ -1,24 +1,19 @@
 /*
+Exercise 4-6. Add commands for handling variables. (It's easy to provide twenty-six variables
+with single-letter names.) Add a variable for the most recently printed value.
 
-Exercise 4-4. Add the commands to print the top elements of the stack without popping, to
-duplicate it, and to swap the top two elements. Add a command to clear the stack.
-
-thinking:
-s ------------ show
-d ------------ duplicate
-w ------------ swap
-c ------------ clear
 */
-
 
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 #include <ctype.h>
 #include <math.h>
+#include <string.h>
 
 #define MAXOP 100 /* max size of operand or operator */
 #define NUMBER '0' /* signal that a number was found */
+#define NAME '1' /* signal that a function name was found */
 
 #define BUFSIZE 100
 char buf[BUFSIZE]; /* buffer for ungetch */
@@ -26,6 +21,7 @@ int bufp = 0; /* next free position in buf */
 
 int sp = 0; /* stack position */
 double val[MAXOP];
+double last;
 
 int getop(char []);
 void push(double);
@@ -38,6 +34,7 @@ void duplicate(void);
 void show(void);
 void swap(void);
 void clear(void);
+void use_function(char []);
 
 
 int main() {
@@ -46,6 +43,10 @@ int main() {
     double op2;
     while(type = getop(s)){
         switch (type) {
+            case NAME:
+                use_function(s);
+                break;
+
             case NUMBER:
                 push(atof(s));
                 break;
@@ -78,24 +79,25 @@ int main() {
                 }
                 break;
 
-            case 's':
+            case '!':
                 show();
                 break;
 
-            case 'd':
+            case '@':
                 duplicate();
                 break;
 
-            case 'w':
+            case '#':
                 swap();
                 break;
 
-            case 'c':
+            case '$':
                 clear();
 
             case '\n':
-                 printf("result: \t%.8g\n", pop());
-                 break;
+                last = pop();
+                printf("result: \t%.8g\n", last);
+                break;
         }
     }
     return 0;
@@ -126,7 +128,15 @@ int getop(char s[]) {
     while ( (s[0] = c = getch()) == ' ' || c == '\t')
     ;
     s[1] = '\0';
-    
+
+    if (isalpha(c)) {
+        int i=0;
+        while(isalpha(s[++i] = c = getch()))
+            ;
+        ungetch(c);
+        s[i] = '\0';
+        return NAME;
+    }
 
     if (!isdigit(c) && c != '.' && c !='-'){
         // putchar(c);
@@ -199,4 +209,32 @@ void swap(void) {
 }
 void clear(void) {
     sp=0;
+}
+
+void use_function(char s[]) {
+    double op2;
+    if (strcmp(s,"sin") == 0){
+        //use sin
+        push(sin(pop()));
+    }
+    if (strcmp(s, "cos") == 0){
+        // use cos
+        push(cos(pop()));
+    }
+    if (strcmp(s, "exp") == 0){
+        // use exp
+        push(exp(pop()));
+    }
+    if (strcmp(s,"pow") == 0){
+        // use pow
+        op2 = pop();
+        push(pow(pop(), op2));
+    }
+
+    if (strcmp(s,"last") == 0){
+        // use pow
+        printf("last result:   %.8g\n", last);
+        getch(); // consume the extra newline character.
+    }
+
 }
