@@ -1,6 +1,26 @@
 #include <stdio.h>
 
+
+#define square(x) x*x
+#define paste(front, back) front ## back // create a token. 可以用来动态的变量名生成。
 #define BUFSIZE 100
+
+
+
+// // test #ifdefine #define
+// #if !defined(HDR)
+// #define HDR
+// #define MSF 100
+// #endif
+
+
+// special form.
+#ifndef HDR
+#define HDR
+/* contents of hdr.h go here */
+#define MSF 100
+#endif
+
 char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
 
@@ -9,18 +29,24 @@ void printd(int n);
 
 int main()
 {
-    int c;
-    static a; // static is default initialize to 0.
-    printf("%d", a);    
-    char pattern[] = "abcde";
-    printf("%s", pattern);
+    // int c;
+    // static a; // static is default initialize to 0.
+    // printf("%d", a);    
+    // char pattern[] = "abcde";
+    // printf("%s", pattern);
 
 
-    int cc[8] = {0,1,2,3,4,5}; // no initializer default to be 0.
-    for (int i=0;i<8;i++)
-        printf("%d,", cc[i]);
+    // int cc[8] = {0,1,2,3,4,5}; // no initializer default to be 0.
+    // for (int i=0;i<8;i++)
+    //     printf("%d,", cc[i]);
 
-    printd(5638);
+    // printd(5638);
+
+    // printf("%d\n",square(10));
+    // int paste(name,1) = 0;
+    // printf("%d\n", name1);
+
+    printf("%d", MSF);
     return 0;
 }
 
